@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Technical Challenge
+
+There are two options to choose from below. Pick the one that will best represent your skills or you find the most interesting!
+
+## Option 1: Meet the Met!
+
+Write a program that connects to the Met Museum of Art to display their art collections.
+
+The Met provides a free and open API of their collection. Their API documentation can be found at: https://metmuseum.github.io/
+
+### The Features
+
+Your program should support the following features (time permitting):
+
+- A view for paginated display of objects
+- A view for individual object details
+- Filter objects by department
+- Search for object by ID
+- Search for object by title
+- Interface is mobile responsive
+- Interface is stylized
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository or unzip the zip folder and cd into the directory
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. Install dependencies
+   `npm install`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Run app
+   `npm run dev` in the root directory
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Technologies used
 
-## Learn More
+- React.js
+- Next.js
+- Tailwind CSS
+- Typescript
+- Node v18 and above
 
-To learn more about Next.js, take a look at the following resources:
+### Comments and Thoughts:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+I have decided to work on the first option, which is to create a web application that displays the Met Museum of Art's collection. I have chosen this option because I am interested in building scalable, user-centric applications that can be used by a wide range of users. I have also chosen this option because I am interested in learning more about the Met Museum of Art and their collection. It was fun to exploring the api.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- I used React.js to create a dynamic and interactive user interface. This allows for better user experience and engagement
+- I used Next.js to create a server-side rendered application. This allows for better performance, scalability, SEO and faster initial load times(assuming this was a real-world application that would be used by millions of users). some of the benefits of using Next.js for this app are;
+- Proxy requests to Met API.
+- Cache responses for faster subsequent loads.
+- handling secure API keys(Though it's not needed in this case but just to keep it in mind).
+- API routes for cross-device extensibility.
+- Handle pagination & filtering on the backend. 
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- I used Tailwind CSS to create a responsive and modern design. This allows for easy customization and scalability.
+- I used Typescript to create a type-safe application. This allows for better code quality and maintainability.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Improvements
+
+- Use debounce for search input to reduce API calls.
+- Clicking all should reset department selection.
+- Improve error message shown to user.
+- Search by title should use it's specific query option instead general query params.
+
+NB: I have set initial page size to 99 to get some cool images. This can be changed to 1 in the code.
