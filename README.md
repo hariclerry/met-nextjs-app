@@ -44,17 +44,21 @@ Your program should support the following features (time permitting):
 
 I have decided to work on the first option, which is to create a web application that displays the Met Museum of Art's collection. I have chosen this option because I am interested in building scalable, user-centric applications that can be used by a wide range of users. I have also chosen this option because I am interested in learning more about the Met Museum of Art and their collection. It was fun to exploring the api.
 
-- I used React.js to create a dynamic and interactive user interface. This allows for better user experience and engagement
-- I used Next.js to create a server-side rendered application. This allows for better performance, scalability, SEO and faster initial load times(assuming this was a real-world application that would be used by millions of users). some of the benefits of using Next.js for this app are;
-- Proxy requests to Met API.
-- Cache responses for faster subsequent loads.
-- handling secure API keys(Though it's not needed in this case but just to keep it in mind).
-- API routes for cross-device extensibility.
-- Handle pagination & filtering on the backend. 
+1 - I used React.js to create a dynamic and interactive user interface. This allows for better user experience and engagement
+2 - I used Next.js to create a server-side rendered application. This allows for better performance, scalability, SEO and faster initial load times(assuming this was a real-world application that would be used by millions of users). some of the benefits of using Next.js for this app are;
+    - Proxy requests to Met API.
+    - Cache responses for faster subsequent loads.
+    - handling secure API keys(Though it's not needed in this case but just to keep it in mind).
+    - API routes for cross-device extensibility.
+    - Handle pagination & filtering on the backend. 
 
 
-- I used Tailwind CSS to create a responsive and modern design. This allows for easy customization and scalability.
-- I used Typescript to create a type-safe application. This allows for better code quality and maintainability.
+4 - I used Tailwind CSS to create a responsive and modern design. This allows for easy customization and scalability.
+6 - I used Typescript to create a type-safe application. This allows for better code quality and maintainability.
+
+7 - Architecture
+    - Next.js gives a well-defined structure to the application. It has a well-defined folder structure and a well-defined way of handling routing. This allows for better scalability and maintainability.
+    - A modular component structure makes the app scalable & maintainable.
 
 ### Improvements
 
