@@ -4,7 +4,7 @@ const BASE_URL = "https://collectionapi.metmuseum.org/public/collection/v1/depar
 
 export async function GET() {
     try {
-        const response = await fetch(BASE_URL);
+        const response = await fetch(BASE_URL, { next: { revalidate: 300 } });
         if (!response.ok) throw new Error("Failed to fetch departments");
 
         const data = await response.json();

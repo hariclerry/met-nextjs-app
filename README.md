@@ -62,9 +62,11 @@ I have decided to work on the first option, which is to create a web application
 
 ### Improvements
 
-- Use debounce for search input to reduce API calls.
+- Use debounce for search input to reduce API calls or add search button for user to click after typing.
 - Clicking all should reset department selection.
 - Improve error message shown to user.
 - Search by title should use it's specific query option instead general query params.
+- Could separate the search by Id into a different file but I assume if we want to combine queries.
+- Add tests for components and pages.
 
 NB: I have set initial page size to 99 to get some cool images. This can be changed to 1 in the code.

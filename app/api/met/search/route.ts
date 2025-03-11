@@ -7,7 +7,7 @@ export async function GET(req: Request) {
         const { searchParams } = new URL(req.url);
         const query = searchParams.get("q");
         const searchById = searchParams.get("searchById") === "true";
-        const departmentId = searchParams.get("departmentId") || "";
+        // const departmentId = searchParams.get("departmentId") || "";
         const page = parseInt(searchParams.get("page") || "1");
         const limit = parseInt(searchParams.get("limit") || "10");
         const offset = (page - 1) * limit;
@@ -22,9 +22,10 @@ export async function GET(req: Request) {
                 return NextResponse.json({ error: "Invalid Object ID" }, { status: 400 });
             }
 
-            const objectRes = await fetch(`${BASE_URL}/objects/${query}`);
+            // The search by Object ID endpoint is different. It doesn't return an array of objects but a single object
+            // I am just assuming that we might want to add another query parameter to the URL with the object ID
+            const objectRes = await fetch(`${BASE_URL}/objects/${query}`, { next: { revalidate: 300 } });
             if (!objectRes.ok) return NextResponse.json({ error: "Object not found" }, { status: 404 });
-
             const objectData = await objectRes.json();
             return NextResponse.json({
                 objects: [objectData],
@@ -36,8 +37,11 @@ export async function GET(req: Request) {
         }
 
         // Construct search query
-        let url = `${BASE_URL}/search?q=${encodeURIComponent(query)}`;
-        if (departmentId) url += `&departmentId=${departmentId}`;
+        // Search by title or other fields
+        console.log('query---', query);
+        let url = `${BASE_URL}/search?title=true&q=${encodeURIComponent(query)}`;
+        // This is not needed for the current implementation
+        // if (departmentId) url += `&departmentId=${departmentId}`;
 
         const response = await fetch(url);
         if (!response.ok) throw new Error("Failed to fetch data");

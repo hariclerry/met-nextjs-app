@@ -17,7 +17,7 @@ export async function GET(req: Request) {
           url += `?departmentIds=${departmentId}`;
       }
 
-    const response = await fetch(url);
+    const response = await fetch(url, { next: { revalidate: 300 } });
 
     if (!response.ok) {
       throw new Error('Failed to fetch data');

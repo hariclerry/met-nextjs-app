@@ -1,10 +1,11 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import MetObjectDetailsModal from './MetObjectDetailsModal';
 import SelectFilter from './SelectFilter';
 import SearchInput from './SearchInput';
 import ObjectCard from './ObjectCard';
 import PaginationControls from './PaginationControls';
+import { useDebounce } from '../hooks/useDebounce';
 
 interface MetObjectsProps {
   objectID: number;
@@ -45,11 +46,15 @@ const MetObjects = () => {
   const [searchId, setSearchId] = useState('');
   const [searchTitle, setSearchTitle] = useState('');
   const [searchById, setSearchById] = useState(false);
+  const [searchByTitle, setSearchByTitle] = useState(false);
+  // custom debounce hooking to handle search
+  const { debouncedValue, setDebouncedValue } = useDebounce(searchTitle, 1000);
+
   const limit = 8;
 
   useEffect(() => {
     fetchMetObjects();
-  }, [page, selectedDepartment, searchId, searchTitle]);
+  }, [page, selectedDepartment, searchId, debouncedValue]);
 
   useEffect(() => {
     fetchDepartments();
@@ -74,19 +79,19 @@ const MetObjects = () => {
       let url = '';
 
       // Fetch all data if no search query or filter is applied
-      console.log(searchById, searchId, searchTitle, selectedDepartment);
-
-      if (!searchId && !searchTitle && !selectedDepartment) {
+      if (!searchId && !debouncedValue && !selectedDepartment) {
         url = `/api/met/objects?page=${page}&limit=${limit}`;
       }
-      if (!searchById && selectedDepartment) {
+      if (!searchById && !searchByTitle && selectedDepartment) {
         url += `/api/met/objects?page=${page}&limit=${limit}&departmentId=${selectedDepartment}`;
       }
 
-      if (searchId || searchTitle) {
-        url = `/api/met/search?q=${
-          searchById ? searchId : searchTitle
-        }&searchById=${searchById}&page=${page}&limit=${limit}`;
+      if (debouncedValue && searchTitle) {
+        url = `/api/met/search?q=${searchTitle}&page=${page}&limit=${limit}&title=true`;
+      }
+
+      if (searchId && searchById) {
+        url = `/api/met/search?q=${searchId}&searchById=${searchById}&page=${page}&limit=${limit}`;
       }
 
       const response = await fetch(url);
@@ -113,6 +118,7 @@ const MetObjects = () => {
     setSearchId('');
     setSearchTitle('');
     setSearchById(false);
+    setSearchByTitle(false);
   };
 
   const handleIdSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,14 +137,12 @@ const MetObjects = () => {
     setPage(1);
   };
 
-  if (loading) {
-    return <p className="text-center text-gray-500">Loading...</p>;
-  }
+  // optimise
+  const currentDepartment =
+    departments.find((dept) => {
+      return Number(dept.departmentId) === Number(selectedDepartment);
+    }) || null;
 
-  if (error) {
-    return <p className="text-center text-red-500">{error}</p>;
-  }
-  console.log(departments);
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {selectedObject && (
@@ -147,7 +151,7 @@ const MetObjects = () => {
           onSelectObject={setSelectedObject}
         />
       )}{' '}
-      <div className="mb-6 text-gray-800 flex flex-wrap gap-4 md:flex-nowrap justify-between items-center">
+      <div className="mb-6 text-gray-800 flex flex-wrap gap-4 justify-between items-center">
         <SelectFilter
           id="department-filter"
           label="Filter by Department"
@@ -156,6 +160,7 @@ const MetObjects = () => {
             name: dept.displayName,
           }))}
           onChange={handleDepartmentChange}
+          value={selectedDepartment !== null ? selectedDepartment : ''}
         />
 
         <SearchInput
@@ -176,29 +181,36 @@ const MetObjects = () => {
           placeholder="Enter title"
         />
       </div>
-      <h1 className="text-3xl font-bold text-center text-gray-700 mt-16">
-        {selectedDepartment
-          ? `Met Museum Objects for ${departments[selectedDepartment].displayName} department`
-          : `Met Museum Objects`}
-      </h1>{' '}
-      {filteredObjects.length === 0 ? (
-        <p className="text-center text-gray-500">No objects found.</p>
+      {error && <p className="text-center text-red-500">{error}</p>}
+      {loading ? (
+        <p className="text-center text-gray-500">Loading...</p>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10">
-            {filteredObjects.map((object) => (
-              <ObjectCard
-                key={object.objectID}
-                object={object}
-                onSelect={setSelectedObject}
+          <h1 className="text-3xl font-bold text-center text-gray-700 mt-16">
+            {currentDepartment
+              ? `Met Museum Objects for ${currentDepartment.displayName} department`
+              : `Met Museum Objects`}
+          </h1>{' '}
+          {filteredObjects.length === 0 ? (
+            <p className="text-center text-gray-500">No objects found.</p>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10">
+                {filteredObjects.map((object) => (
+                  <ObjectCard
+                    key={object.objectID}
+                    object={object}
+                    onSelect={setSelectedObject}
+                  />
+                ))}
+              </div>
+              <PaginationControls
+                page={page}
+                totalPages={totalPages}
+                onPageChange={setPage}
               />
-            ))}
-          </div>
-          <PaginationControls
-            page={page}
-            totalPages={totalPages}
-            onPageChange={setPage}
-          />
+            </>
+          )}
         </>
       )}
     </div>
